@@ -1,13 +1,6 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import {
-  Center,
-  Button,
-  List,
-  ListItem,
-  CloseButton,
-  Flex,
-} from "@chakra-ui/react";
+import Form from "../../components/form";
 
 const ParentCavas = () => {
   const [gameStarted, setGameStarted] = useState(false);
@@ -30,45 +23,6 @@ const ParentCavas = () => {
         <Canvas names={names} />
       )}
     </>
-  );
-};
-
-const Form = ({ startgame, setnames, names }) => {
-  const startGame = () => {
-    startgame(true);
-  };
-
-  const removeName = (name) => {
-    const newNames = names.filter((eachName) => {
-      return eachName != name;
-    });
-    setnames(newNames);
-  };
-
-  return (
-    <Center marginTop={"100px"}>
-      <Flex direction={"column"}>
-        <List spacing={3}>
-          <Flex direction={"column"}>
-            {names.map((name) => {
-              return (
-                <Flex key={name}>
-                  <CloseButton size="sm" onClick={() => removeName(name)} />
-                  <ListItem>{name}</ListItem>
-                </Flex>
-              );
-            })}
-          </Flex>
-        </List>
-        <div>
-          <Center>
-            <Button colorScheme="blue" onClick={startGame}>
-              Start
-            </Button>
-          </Center>
-        </div>
-      </Flex>
-    </Center>
   );
 };
 

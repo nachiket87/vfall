@@ -2,6 +2,19 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import Form from "../../components/form";
 
+const AVATAR_URLS = {
+  Nick: "https://avatars.githubusercontent.com/u/7636254?v=4",
+  Lucas: "https://avatars.githubusercontent.com/u/26128560?v=4",
+  Johnny: "https://avatars.githubusercontent.com/u/42249198?v=4",
+  Kiril: "https://avatars.githubusercontent.com/u/19571383?v=4",
+  Nirmohi: "https://avatars.githubusercontent.com/u/12480324?v=4",
+  Martin: "https://avatars.githubusercontent.com/u/19353631?v=4",
+  Yann: "https://avatars.githubusercontent.com/u/6068943?v=4",
+  Vention: "https://avatars.githubusercontent.com/u/19786058?v=4",
+  Sam: "https://avatars.githubusercontent.com/u/59837266?v=4",
+  Nachiket: "https://avatars.githubusercontent.com/u/33430835?v=4",
+};
+
 const ParentCavas = () => {
   const [gameStarted, setGameStarted] = useState(false);
   const [names, setNames] = useState([
@@ -18,7 +31,11 @@ const ParentCavas = () => {
   return (
     <>
       {!gameStarted ? (
-        <Form startgame={setGameStarted} setnames={setNames} names={names} />
+        <Form
+          setGameStarted={setGameStarted}
+          setNames={setNames}
+          names={names}
+        />
       ) : (
         <Canvas names={names} />
       )}
@@ -27,16 +44,31 @@ const ParentCavas = () => {
 };
 
 const Canvas = ({ names }) => {
-  const players = [];
   const Sketch = dynamic(() => import("react-p5"), {
     ssr: false,
   });
+
+  const players = [];
+  let profile;
+  let avatars = {};
 
   const setup = (p5, canvasParentRef) => {
     p5.createCanvas(window.innerWidth, window.innerHeight).parent(
       canvasParentRef
     );
     p5.noStroke();
+    avatars = names.reduce(
+      (avatars, name) =>
+        Object.assign(avatars, {
+          [name]: p5.loadImage(
+            AVATAR_URLS[name] ? AVATAR_URLS[name] : AVATAR_URLS["Vention"]
+          ),
+        }),
+      {}
+    );
+    profile = p5.loadImage(
+      "https://avatars.githubusercontent.com/u/7636254?v=4"
+    );
   };
 
   function player(p5) {
@@ -56,19 +88,20 @@ const Canvas = ({ names }) => {
       let w = 0.6; // angular speed
       let angle = w * time + this.initialangle;
 
-      // different size snowflakes fall at slightly different y speeds
+      // different size profile picture fall at slightly different y speeds
 
       // delete snowflake if past end of screen
-      if (this.posY <= p5.height - 10) {
+      if (this.posY <= p5.height - 50) {
         this.posY += p5.pow(this.size, 0.5);
         this.posX = p5.width / 2 + this.radius * p5.sin(angle);
       }
     };
 
     this.display = function () {
-      p5.textSize(32);
+      p5.textSize(16);
       p5.text(this.name, this.posX, this.posY);
       p5.fill("black");
+      p5.image(avatars[this.name], this.posX, this.posY, 50, 50);
     };
   }
 
@@ -88,7 +121,7 @@ const Canvas = ({ names }) => {
       player.display();
     }
     const gameOver = players.every(function (e) {
-      return e.posY >= p5.height - 10;
+      return e.posY >= p5.height - 50;
     });
 
     if (gameOver) {
@@ -108,7 +141,11 @@ const Canvas = ({ names }) => {
         winner = player;
       }
     });
-    alert(`${winner.name}`);
+    if (winner) {
+      alert(`${winner.name}`);
+    } else {
+      alert(`there are no winners in this game`);
+    }
   };
 
   return <Sketch setup={setup} draw={draw} />;

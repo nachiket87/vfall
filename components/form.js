@@ -1,25 +1,23 @@
-import { useState } from "react";
+import AddName from "./addname";
 import {
   Center,
   Button,
   List,
-  Input,
   ListItem,
   CloseButton,
   Flex,
 } from "@chakra-ui/react";
 
-const Form = ({ startgame, setnames, names }) => {
-  const [name, setName] = useState("");
+const Form = ({ setGameStarted, setNames, names }) => {
   const startGame = () => {
-    startgame(true);
+    setGameStarted(true);
   };
 
   const removeName = (name) => {
     const newNames = names.filter((eachName) => {
       return eachName != name;
     });
-    setnames(newNames);
+    setNames(newNames);
   };
 
   return (
@@ -44,21 +42,7 @@ const Form = ({ startgame, setnames, names }) => {
             </Button>
           </Center>
         </div>
-        <Flex direction="column">
-          <Input
-            placeholder="Add new player..."
-            marginY={25}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Button
-            colorScheme="blue"
-            onClick={() => {
-              setnames([...names, name]);
-            }}
-          >
-            Add Name
-          </Button>
-        </Flex>
+        <AddName names={names} setNames={setNames} />
       </Flex>
     </Center>
   );

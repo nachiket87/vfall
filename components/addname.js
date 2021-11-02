@@ -6,8 +6,12 @@ const AddName = ({ names, setNames }) => {
   const inputEl = useRef(null);
   const addNameToList = (e) => {
     e.preventDefault();
-    setNames([name, ...names]);
-    inputEl.current.value = "";
+    if (name.length > 0) {
+      setNames([...names, name]);
+      setName("");
+      inputEl.current.focus();
+      inputEl.current.value = "";
+    }
   };
   return (
     <Flex direction="column">

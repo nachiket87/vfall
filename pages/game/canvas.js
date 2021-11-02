@@ -27,6 +27,7 @@ const ParentCavas = () => {
     "Kiril",
     "Lucas",
     "Johnny",
+    "Martin",
   ]);
   return (
     <>

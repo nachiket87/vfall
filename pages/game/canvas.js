@@ -1,34 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Form from "../../components/form";
+import Cookie from "js-cookie";
+import { parseCookies } from "../../helpers/cookie-helper";
+import { AVATAR_URLS } from "../../constants/constants";
 
-const AVATAR_URLS = {
-  Nick: "https://avatars.githubusercontent.com/u/7636254?v=4",
-  Lucas: "https://avatars.githubusercontent.com/u/26128560?v=4",
-  Johnny: "https://avatars.githubusercontent.com/u/42249198?v=4",
-  Kiril: "https://avatars.githubusercontent.com/u/19571383?v=4",
-  Nirmohi: "https://avatars.githubusercontent.com/u/12480324?v=4",
-  Martin: "https://avatars.githubusercontent.com/u/19353631?v=4",
-  Yann: "https://avatars.githubusercontent.com/u/6068943?v=4",
-  Vention: "https://avatars.githubusercontent.com/u/19786058?v=4",
-  Sam: "https://avatars.githubusercontent.com/u/59837266?v=4",
-  Nachiket: "https://avatars.githubusercontent.com/u/33430835?v=4",
-};
-
-const ParentCavas = () => {
+const ParentCavas = (props) => {
+  const persistedNames =
+    props?.names?.length > 0 ? props?.names?.split(",") : [];
   const [gameStarted, setGameStarted] = useState(false);
-  const [names, setNames] = useState([
-    "Nick",
-    "Yann",
-    "Nirmohi",
-    "Nachiket",
-    "Sam",
-    "Pawan",
-    "Kiril",
-    "Lucas",
-    "Johnny",
-    "Martin",
-  ]);
+  const [names, setNames] = useState(persistedNames);
+
+  useEffect(() => {
+    Cookie.set("names", names);
+  }, [names]);
+
   return (
     <>
       {!gameStarted ? (
@@ -62,7 +48,9 @@ const Canvas = ({ names }) => {
       (avatars, name) =>
         Object.assign(avatars, {
           [name]: p5.loadImage(
-            AVATAR_URLS[name] ? AVATAR_URLS[name] : AVATAR_URLS["Vention"]
+            AVATAR_URLS[name.toLowerCase()]
+              ? AVATAR_URLS[name.toLowerCase()]
+              : AVATAR_URLS["vention"]
           ),
         }),
       {}
@@ -91,7 +79,7 @@ const Canvas = ({ names }) => {
 
       // different size profile picture fall at slightly different y speeds
 
-      // delete snowflake if past end of screen
+      // delete profile picture if past end of screen
       if (this.posY <= p5.height - 50) {
         this.posY += p5.pow(this.size, 0.5);
         this.posX = p5.width / 2 + this.radius * p5.sin(angle);
@@ -150,6 +138,11 @@ const Canvas = ({ names }) => {
   };
 
   return <Sketch setup={setup} draw={draw} />;
+};
+
+ParentCavas.getInitialProps = ({ req }) => {
+  const names = parseCookies(req);
+  return names;
 };
 
 export default ParentCavas;

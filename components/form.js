@@ -6,7 +6,12 @@ import {
   ListItem,
   CloseButton,
   Flex,
+  Wrap,
+  WrapItem,
+  Avatar,
+  Divider,
 } from "@chakra-ui/react";
+import { AVATAR_URLS } from "../constants/constants";
 
 const Form = ({ setGameStarted, setNames, names }) => {
   const startGame = () => {
@@ -22,28 +27,42 @@ const Form = ({ setGameStarted, setNames, names }) => {
 
   return (
     <Center marginTop={"100px"}>
-      <Flex direction={"column"}>
+      <div>
         <List spacing={3}>
-          <Flex direction={"column"}>
-            {names.map((name, index) => {
-              return (
-                <Flex key={`${name}_${index}`}>
-                  <CloseButton size="sm" onClick={() => removeName(name)} />
-                  <ListItem>{name}</ListItem>
-                </Flex>
-              );
-            })}
-          </Flex>
+          {names.map((name, index) => {
+            return (
+              <div key={`${name}_${index}`}>
+                <div style={{ margin: "10px" }}>
+                  <Flex alignItems="center">
+                    <CloseButton size="sm" onClick={() => removeName(name)} />
+                    <Wrap>
+                      <WrapItem>
+                        <Avatar
+                          name={name}
+                          src={
+                            AVATAR_URLS[name.toLowerCase()] ||
+                            AVATAR_URLS["vention"]
+                          }
+                        />
+                      </WrapItem>
+                    </Wrap>
+                    <ListItem>{name}</ListItem>
+                  </Flex>
+                </div>
+                <Divider />
+              </div>
+            );
+          })}
         </List>
-        <div>
+        <AddName names={names} setNames={setNames} />
+        <div style={{ marginTop: "25px" }}>
           <Center>
             <Button colorScheme="blue" onClick={startGame}>
               Start
             </Button>
           </Center>
         </div>
-        <AddName names={names} setNames={setNames} />
-      </Flex>
+      </div>
     </Center>
   );
 };

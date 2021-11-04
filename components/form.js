@@ -26,7 +26,7 @@ const Form = ({ setGameStarted, setNames, names }) => {
   };
 
   return (
-    <Center marginTop={"100px"}>
+    <Center>
       <div>
         <List spacing={3}>
           {names.map((name, index) => {

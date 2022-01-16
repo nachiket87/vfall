@@ -12,7 +12,7 @@ const ParentCavas = (props) => {
   const [names, setNames] = useState(persistedNames);
 
   useEffect(() => {
-    Cookie.set("names", names);
+    Cookie.set("names", names, { expires: 365 });
   }, [names]);
 
   return (

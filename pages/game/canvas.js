@@ -24,13 +24,13 @@ const ParentCavas = (props) => {
           names={names}
         />
       ) : (
-        <Canvas names={names} />
+        <Canvas names={names} setNames={setNames} />
       )}
     </>
   );
 };
 
-const Canvas = ({ names }) => {
+const Canvas = ({ names, setNames }) => {
   const Sketch = dynamic(() => import("react-p5"), {
     ssr: false,
   });
@@ -130,11 +130,8 @@ const Canvas = ({ names }) => {
         winner = player;
       }
     });
-    if (winner) {
-      alert(`${winner.name}`);
-    } else {
-      alert(`there are no winners in this game`);
-    }
+    alert(winner ? `${winner.name}` : `there are no winners in this game`);
+    window.location.href = "/game/canvas";
   };
 
   return <Sketch setup={setup} draw={draw} />;
